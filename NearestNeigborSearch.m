@@ -23,12 +23,12 @@ BM = zeros(1,5);
 
 % Calculating the different scales to use for searching
 % 9 different scales used 
-if ho == min(ho,wo)
+if h == min(h,w)
   ratio = double(wo/ho); % Using object image ratio to select search region
   for j = 1:9
   scales(j,:) = [j*floor(h/9) j*floor(ratio*h/9)];
   end
-elseif wo == min(ho,wo)
+elseif w == min(h,w)
   ratio = double(ho/wo); % Using object image ratio to select search region
   for j = 1:9
   scales(j,:) = [j*floor(ratio*w/9) j*floor(w/9)];

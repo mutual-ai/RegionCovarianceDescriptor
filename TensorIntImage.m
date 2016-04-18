@@ -21,7 +21,7 @@ F = permute(F,[3 1 2]); % shift dimensions
 
 P = int64(zeros(d,h+1,w+1));
 
-% For each feature in feature matrix calculate the integral image (Equattion 10)
+% For each feature in feature matrix calculate the integral image (Equation 10)
 for i=1:d
     P(i,:,:) = integralImage(squeeze(int64(F(i,:,:))));
 end

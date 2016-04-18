@@ -15,7 +15,7 @@ global Co;
 %function RegionCovariance(object,target)
 
 disp('reading images');
-RGBo = imread(object);
+RGBo = imread(object);      
 RGBt = imread(target);
 
 disp('Calculating Feature Images');

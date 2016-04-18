@@ -16,11 +16,18 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function F = FeatureImage(RGB)
+function [F, I] = FeatureImage(RGB)
 
-I = rgb2hsi(RGB); % Convert to grayscale (intensity) image 
+% Convert to grayscale (intensity) image
+r = RGB(:, :, 1);
+g = RGB(:, :, 2);
+b = RGB(:, :, 3);
 
-I = squeeze(I(:,:,3));
+I = rgb2gray(RGB); % Convert to grayscale (intensity) image 
+%I = ((r + g + b)/3);
+I = im2double(I);
+
+%I = squeeze(I(:,:,3));
 
 [h,w,~] = size(RGB);
 
@@ -33,18 +40,20 @@ for i=1:h
     end
 end
 
-F(:,:,3:5) = RGB;    % RGB pixel values
+F(:,:,3:5) = im2double(RGB);    % RGB pixel values
 
-xdev1 = [-1 0 1];   % first derivate calculation filter
+xdev1 = [-1 0 1]';   % first derivate calculation filter
 ydev1 = xdev1';
 
-xdev2 = [-1 2 1];  % second derivate calculation filter
+xdev2 = [-1 2 -1]';  % second derivate calculation filter
 ydev2 = xdev2';
 
 F(:,:,6) = abs(conv2(I,xdev1,'same'));    % Absolute of first derivative w.r.t x |dI/dx|
 F(:,:,7) = abs(conv2(I,ydev1,'same'));    % Absolute of first derivative w.r.t y |dI/dy|
 F(:,:,8) = abs(conv2(I,xdev2,'same'));    % Absolute of second derivative w.r.t x |d2I/dx2|
 F(:,:,9) = abs(conv2(I,ydev2,'same'));    % Absolute of second derivative w.r.t y |d2I/dy2|
+
+%I = im2uint8(I);
 
 %F = uint8(F);  %Covert back to uint8
 end
