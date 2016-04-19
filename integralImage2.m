@@ -14,7 +14,7 @@
 %  Fi - W x H matrix of feature (i) in F matrix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function intimage = integralImage(Fi)
+function intimage = integralImage2(Fi)
 
    % Fi = double(Fi);
     
