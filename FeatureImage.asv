@@ -27,7 +27,7 @@ r = RGB(:, :, 1);
 g = RGB(:, :, 2);
 b = RGB(:, :, 3);
 
-I = rgb2gray(RGB);      % Convert to grayscale (intensity) image 
+%I = rgb2gray(RGB);      % Convert to grayscale (intensity) image 
 %I = ((r + g + b)/3);
 I = im2double(I);       %double intensity image I
 
@@ -57,7 +57,6 @@ F(:,:,7) = abs(conv2(I,ydev1,'same'));    % Absolute of first derivative w.r.t y
 F(:,:,8) = abs(conv2(I,xdev2,'same'));    % Absolute of second derivative w.r.t x |d^2I/dx^2|
 F(:,:,9) = abs(conv2(I,ydev2,'same'));    % Absolute of second derivative w.r.t y |d^2I/dy^2|
 
-%I = im2uint8(I);
+F = permute(F,[2 1 3]); % permute F from H x W x d to W x H x d
 
-%F = uint8(F);  %Covert back to uint8
 end

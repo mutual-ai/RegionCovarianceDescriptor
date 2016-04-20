@@ -55,9 +55,9 @@ for s = 1:9;
       else
       Cz(i,:,:) = C; 
       d = CovarianceDistance(Co1,C); % Calculate distance
-      end
       BM(i,:) = [ws hs (ws+wl) (hs+hl) d]; % Save distance and coordinates to Matching location matrix
       i = i + 1;    
+      end
       ws = ws + 5;  %Shift search region 5 pixels horizontal
     end
     hs = hs + 5;  %Shift search region 5 pixels vertical
