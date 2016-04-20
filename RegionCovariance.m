@@ -10,10 +10,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function RegionCovariance(object,target)
 
-global Co;
-
-%function RegionCovariance(object,target)
-
 disp('reading images');
 RGBo = imread(object);      
 RGBt = imread(target);
@@ -49,28 +45,38 @@ BMt = BM(1:1000,:);     % save the best 1000 distances
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Brute search algorithm on best matching 1000 location using Covariance 
 % matrices C2 - C5
-
+z = 1;
 for k = 1:1000
   
   yd = round((BMt(k,4) - BMt(k,2))/2 + BMt(k,2));
   xd = round((BMt(k,3) - BMt(k,1))/2 + BMt(k,1));
   
   Ct2 = RCovariance(Pt,Qt,BMt(k,1),BMt(k,2),xd,BMt(k,4));
+  [R1,p1] = chol(Ct2);
   Ct3 = RCovariance(Pt,Qt,xd,BMt(k,2),BMt(k,3),BMt(k,4));
+  [R2,p2] = chol(Ct3);
   Ct4 = RCovariance(Pt,Qt,BMt(k,1),BMt(k,2),BMt(k,3),yd);
+  [R3,p3] = chol(Ct4);
   Ct5 = RCovariance(Pt,Qt,BMt(k,1),yd,BMt(k,3),BMt(k,4));
+  [R4,p4] = chol(Ct5);
   
-  d2 = CovarianceDistance(squeeze(Co(2,:,:)),Ct2); 
-  d3 = CovarianceDistance(squeeze(Co(3,:,:)),Ct3);
-  d4 = CovarianceDistance(squeeze(Co(4,:,:)),Ct4);
-  d5 = CovarianceDistance(squeeze(Co(5,:,:)),Ct5);
-  
-  BMt(k,6:9) = [d2 d3 d4 d5];
-  
-  BMt(k,10) = BMt(k,5) + BMt(k,6) + BMt(k,7) + BMt(k,8) + BMt(k,9) - max(BMt(k,5:9));
+  if (max([p1 p2 p3 p4])~=0)      
+      fprintf('Covariance matrix is not positive definite symmetric matrix\n');
+  else 
+      
+      d2 = CovarianceDistance(squeeze(Co(2,:,:)),Ct2); 
+      d3 = CovarianceDistance(squeeze(Co(3,:,:)),Ct3);
+      d4 = CovarianceDistance(squeeze(Co(4,:,:)),Ct4);
+      d5 = CovarianceDistance(squeeze(Co(5,:,:)),Ct5);
+
+      BMf(z,1:5) = BMt(k,1:5);
+      BMf(z,6:9) = [d2 d3 d4 d5];
+      BMf(z,10) = BMf(z,5) + BMf(z,6) + BMf(z,7) + BMf(z,8) + BMf(z,9) - max(BMf(z,5:9));
+      z = z + 1;
+  end
 end
 
-BMt = sortrows(BMt, 10); % Sort best matching matrix BM and store best 1000 to best matching target matrix BMt
+BMf = sortrows(BMf, 10); % Sort best matching matrix BM and store best 1000 to best matching target matrix BMt
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -80,12 +86,12 @@ It = double(It);
 %  Draw rectangle around matching area on target image
 
 for j = 1:1
-  Loc = BMt(j,1:4);
+  Loc = BMf(j,1:4);
 
-  hs = Loc(1);
-  ws = Loc(2);
-  hf = Loc(3);
-  wf = Loc(4);
+  ws = Loc(1);
+  hs = Loc(2);
+  wf = Loc(3);
+  hf = Loc(4);
 
   It(hs:hf,ws) = ones((hf-hs+1),1);
   It(hs:hf,wf) = ones((hf-hs+1),1);

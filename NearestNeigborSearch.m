@@ -49,9 +49,9 @@ for s = 1:9;
       C = RCovariance(Pt,Qt,ws,hs,(ws+wl),(hs+hl)); % Covariance matrix of each region
       [R,p] = chol(C);
       if (p~=0)
-          z = z + 1;
-          fprintf('Covariance matrix is not positive definite symmetric matrix\n');
-          fprintf('P = %d   dimesnions %d %d %d %d\n\n',p,ws,hs,ws+wl,hs+hl);
+         % z = z + 1;
+         % fprintf('Covariance matrix is not positive definite symmetric matrix\n');
+         % fprintf('P = %d   dimesnions %d %d %d %d\n\n',p,ws,hs,ws+wl,hs+hl);
       else
       Cz(i,:,:) = C; 
       d = CovarianceDistance(Co1,C); % Calculate distance
