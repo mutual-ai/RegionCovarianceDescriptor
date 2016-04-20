@@ -39,12 +39,12 @@ disp('Calculating Target Image P and Q');
 Pt = TensorIntImage(Ft);        % Pt - W x H x d tensor of integral image
 Qt = Tensor2ndOrderInt(Ft);     % Qt - W x H x d x d tensor of 2nd order integral image
 
-disp('Performing initial search');
+fprintf('Performing initial search\n\n\n');
 [BM, Cz] = NearestNeigborSearch(squeeze(Co(1,:,:)),Pt,Qt,wo,ho);
 
-BM = sortrows(BM, 5);
+BM = sortrows(BM, 5);   % sort matrix using element 5 (calculated distance)
 
-BMt = BM(1:1000,:);
+BMt = BM(1:1000,:);     % save the best 1000 distances
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Brute search algorithm on best matching 1000 location using Covariance 
@@ -52,13 +52,13 @@ BMt = BM(1:1000,:);
 
 for k = 1:1000
   
-  yd = round((BMt(k,3) - BMt(k,1))/2 + BMt(k,1));
-  xd = round((BMt(k,4) - BMt(k,2))/2 + BMt(k,2));
+  yd = round((BMt(k,4) - BMt(k,2))/2 + BMt(k,2));
+  xd = round((BMt(k,3) - BMt(k,1))/2 + BMt(k,1));
   
-  Ct2 = RCovariance(Pt,Qt,BMt(k,1),BMt(k,2),BMt(k,3),xd);
-  Ct3 = RCovariance(Pt,Qt,BMt(k,1),xd,BMt(k,3),BMt(k,4));
-  Ct4 = RCovariance(Pt,Qt,BMt(k,1),BMt(k,2),yd,BMt(k,4));
-  Ct5 = RCovariance(Pt,Qt,yd,BMt(k,2),BMt(k,3),BMt(k,4));
+  Ct2 = RCovariance(Pt,Qt,BMt(k,1),BMt(k,2),xd,BMt(k,4));
+  Ct3 = RCovariance(Pt,Qt,xd,BMt(k,2),BMt(k,3),BMt(k,4));
+  Ct4 = RCovariance(Pt,Qt,BMt(k,1),BMt(k,2),BMt(k,3),yd);
+  Ct5 = RCovariance(Pt,Qt,BMt(k,1),yd,BMt(k,3),BMt(k,4));
   
   d2 = CovarianceDistance(squeeze(Co(2,:,:)),Ct2); 
   d3 = CovarianceDistance(squeeze(Co(3,:,:)),Ct3);
