@@ -15,8 +15,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function intimage = integralImage2(Fi)
-
-   % Fi = double(Fi);
     
     [w,h] = size(Fi);
 

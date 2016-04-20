@@ -17,10 +17,10 @@ function Q = Tensor2ndOrderInt(F)
 
 F = permute(F,[3 1 2]);
 
-[d,h,w] = size(F);
+[d,w,h] = size(F);
 
 % For each feature calculate the second order feature image as per equation 9
-F2 = int64(zeros(d,d,h,w));
+F2 = zeros(d,d,w,h);
 for i=1:d
     for j=1:d
         F2(i,j,:,:) = F(i,:,:).*F(j,:,:);
@@ -28,12 +28,12 @@ for i=1:d
 end
 
 % For each feature calculate the tensor matrix of the 2nd Order int image
-Q = int64(zeros(d,d,h+1,w+1));
-for i=1:d
-    for j=1:d
-        Q(i,j,:,:) = integralImage(squeeze(F2(i,j,:,:)));
-    end
-end
-Q = Q(:,:,2:end,2:end);  % Q - 9 x 9 matrix for each feature
+Qtemp = zeros(d,d,w+1,h+1);
+
+Qtemp(:,:,2:end,2:end) = cumsum(cumsum(F2,4),3);
+
+Q = Qtemp(:,:,2:end,2:end);  % Q - 9 x 9 matrix for each feature
+
+Q = permute(Q,[3 4 1 2]);
 
 end

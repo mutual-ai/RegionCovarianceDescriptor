@@ -29,18 +29,18 @@ Qo = Tensor2ndOrderInt(Fo);     % Qo - W x H x d x d tensor  of 2nd order integr
 [ho,wo,~] = size(RGBo);
 
 disp('Calculating Object Image Covariance Matrices C1 - C5');
-Co(1,:,:) = RCovariance(Po,Qo,1,1,ho,wo);
-Co(2,:,:) = RCovariance(Po,Qo,1,1,ho,floor(wo/2));
-Co(3,:,:) = RCovariance(Po,Qo,1,wo-floor(wo/2),ho,wo);
-Co(4,:,:) = RCovariance(Po,Qo,1,1,floor(ho/2),wo);
-Co(5,:,:) = RCovariance(Po,Qo,ho-floor(ho/2),1,ho,wo);
+Co(1,:,:) = RCovariance(Po,Qo,1,1,wo,ho);
+Co(2,:,:) = RCovariance(Po,Qo,1,1,floor(wo/2),ho);
+Co(3,:,:) = RCovariance(Po,Qo,wo-floor(wo/2),1,wo,ho);
+Co(4,:,:) = RCovariance(Po,Qo,1,1,wo,floor(ho/2));
+Co(5,:,:) = RCovariance(Po,Qo,1,ho-floor(ho/2),wo,ho);
 
 disp('Calculating Target Image P and Q');
-Pt = TensorIntImage(Ft);
-Qt = Tensor2ndOrderInt(Ft);
+Pt = TensorIntImage(Ft);        % Pt - W x H x d tensor of integral image
+Qt = Tensor2ndOrderInt(Ft);     % Qt - W x H x d x d tensor of 2nd order integral image
 
 disp('Performing initial search');
-[BM, Cz] = NearestNeigborSearch(squeeze(Co(1,:,:)),Pt,Qt,ho,wo);
+[BM, Cz] = NearestNeigborSearch(squeeze(Co(1,:,:)),Pt,Qt,wo,ho);
 
 BM = sortrows(BM, 5);
 

@@ -15,16 +15,16 @@
 
 function P = TensorIntImage(F)
 
-%F = permute(F,[3 1 2]); % shift dimensions
+F = permute(F,[3 1 2]); % shift dimensions for cumsum (d x W x H)
 
-[w,h,d] = size(F);
+[d,w,h] = size(F);
 
-Ptemp = zeros(w+1,h+1,d);
+Ptemp = zeros(d,w+1,h+1);
 
-% For each feature in feature matrix calculate the integral image (Equation 10)
-for i=1:d
-    Ptemp(:,:,i) = integralImage(F(:,:,i));
-end
-P = Ptemp(2:end,2:end,:);
+Ptemp(:,2:end,2:end) = cumsum(cumsum(F,3),2);
+
+P = Ptemp(:,2:end,2:end);
+
+P = permute(P,[2 3 1]); % Permute back W x H x d
 
 end
