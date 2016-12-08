@@ -22,41 +22,34 @@
 
 function F = FeatureImage(RGB)
 
-% Convert to grayscale (intensity) image
-r = RGB(:, :, 1);
-g = RGB(:, :, 2);
-b = RGB(:, :, 3);
+    I = rgb2gray(RGB);      % Convert to grayscale (intensity) image 
+    I = im2double(I);       % convert intensity image I to double
+    %I = squeeze(I(:,:,3));
 
-I = rgb2gray(RGB);      % Convert to grayscale (intensity) image 
-%I = ((r + g + b)/3);
-I = im2double(I);       %double intensity image I
+    [h,w,~] = size(RGB);
 
-%I = squeeze(I(:,:,3));
+    F = zeros(h,w,9);       % Feature image template  (H x W x d matrix)
 
-[h,w,~] = size(RGB);
-
-F = zeros(h,w,9);       % Feature image template  (H x W x d matrix)
-
-for i=1:h
-    for j=1:w
-        F(i,:,1) = i*ones(1,w);         % Pixel x location
-        F(:,j,2) = j*ones(h,1);         % Pixel y location
+    for i=1:h
+        for j=1:w
+            F(i,:,1) = i*ones(1,w);         % Pixel x location
+            F(:,j,2) = j*ones(h,1);         % Pixel y location
+        end
     end
-end
 
-F(:,:,3:5) = im2double(RGB);            % double RGB pixel values
+    F(:,:,3:5) = im2double(RGB);            % double RGB pixel values
 
-xdev1 = [-1 0 1]';      % first derivate calculation kernel (dx)
-ydev1 = xdev1';         % transpose for dy    
+    xdev1 = [-1 0 1]';      % first derivate calculation kernel (dx)
+    ydev1 = xdev1';         % transpose for dy    
 
-xdev2 = [-1 2 -1]';     % second derivate calculation  (dx^2)
-ydev2 = xdev2';         % transpose for dy^2
+    xdev2 = [-1 2 -1]';     % second derivate calculation  (dx^2)
+    ydev2 = xdev2';         % transpose for dy^2
 
-F(:,:,6) = abs(conv2(I,xdev1,'same'));    % Absolute of first derivative w.r.t x |dI/dx|
-F(:,:,7) = abs(conv2(I,ydev1,'same'));    % Absolute of first derivative w.r.t y |dI/dy|
-F(:,:,8) = abs(conv2(I,xdev2,'same'));    % Absolute of second derivative w.r.t x |d^2I/dx^2|
-F(:,:,9) = abs(conv2(I,ydev2,'same'));    % Absolute of second derivative w.r.t y |d^2I/dy^2|
+    F(:,:,6) = abs(conv2(I,xdev1,'same'));    % Absolute of first derivative w.r.t x |dI/dx|
+    F(:,:,7) = abs(conv2(I,ydev1,'same'));    % Absolute of first derivative w.r.t y |dI/dy|
+    F(:,:,8) = abs(conv2(I,xdev2,'same'));    % Absolute of second derivative w.r.t x |d^2I/dx^2|
+    F(:,:,9) = abs(conv2(I,ydev2,'same'));    % Absolute of second derivative w.r.t y |d^2I/dy^2|
 
-F = permute(F,[2 1 3]); % permute F from H x W x d to W x H x d
+    F = permute(F,[2 1 3]); % permute F from H x W x d to W x H x d
 
 end
